@@ -1,6 +1,6 @@
 {
   "name": "starcraft-2-quotes-ui",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
