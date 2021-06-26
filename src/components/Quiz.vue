@@ -35,10 +35,13 @@
             block
             :disabled="gameOver"
             @click="answer(choice)"
-          >{{ choice }}</v-btn>
+            >{{ choice }}</v-btn
+          >
         </v-col>
         <v-col>
-          <v-btn color="#171717" id="quiz-button-restart" block @click="restart">Restart</v-btn>
+          <v-btn color="#171717" id="quiz-button-restart" block @click="restart"
+            >Restart</v-btn
+          >
         </v-col>
       </v-row>
     </v-card>
@@ -46,24 +49,33 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
+import Konami from 'konami';
+
+const CHOICES_LENGTH_DEFAULT = 4;
+const CHOICES_LENGTH_KONAMI = 8;
 
 export default {
-  name: "Quiz",
+  name: 'Quiz',
 
   data: () => ({
-    quote: "Two become one!",
-    choices: ["High Templar", "Firebat", "Medivac", "Dark Templar"],
+    quote: 'Two become one!',
+    choices: ['High Templar', 'Firebat', 'Medivac', 'Dark Templar'],
+    choices_length: CHOICES_LENGTH_DEFAULT,
     units: [],
     isMelee: true,
     gameOver: false,
-    feedback: "Select the unit which said the above quote.",
+    feedback: 'Select the unit which said the above quote.',
     score: 0,
     color: process.env.VUE_APP_COLOR,
-    loading: false
+    loading: false,
   }),
   created() {
     this.getEveryUnit();
+    new Konami(() => {
+      this.choices_length = CHOICES_LENGTH_KONAMI;
+      this.restart();
+    });
   },
   methods: {
     getEveryUnit() {
@@ -74,18 +86,18 @@ export default {
       let url = `${process.env.VUE_APP_API_URL}/v1/units`;
 
       if (this.isMelee) {
-        url += "?is_melee=true";
+        url += '?is_melee=true';
       }
 
       this.loading = true;
       axios
         .get(url)
-        .then(res => {
+        .then((res) => {
           this.units = res.data;
           this.loading = false;
           this.randomQuote();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           this.loading = false;
         });
@@ -100,18 +112,18 @@ export default {
       let url = `${process.env.VUE_APP_API_URL}/v1/quotes/random`;
 
       if (this.isMelee) {
-        url += "?is_melee=true";
+        url += '?is_melee=true';
       }
 
       this.loading = true;
       axios
         .get(url)
-        .then(res => {
+        .then((res) => {
           this.quote = res.data;
           this.randomChoices();
           this.loading = false;
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           this.loading = false;
         });
@@ -133,7 +145,7 @@ export default {
     },
     answer(choice) {
       if (choice === this.quote.unit) {
-        this.feedback = "Correct!";
+        this.feedback = 'Correct!';
         this.score++;
         this.randomQuote();
       } else {
@@ -146,7 +158,7 @@ export default {
       this.default();
     },
     default() {
-      this.feedback = "Select the unit which said the above quote.";
+      this.feedback = 'Select the unit which said the above quote.';
       this.score = 0;
       this.gameOver = false;
     },
@@ -172,7 +184,7 @@ export default {
       }
 
       return array;
-    }
-  }
+    },
+  },
 };
 </script>

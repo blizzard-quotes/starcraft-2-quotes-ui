@@ -6,18 +6,27 @@
     <p class="text-justify">
       {{ url }} was created to easily access and remember memorable quotes from
       the famous real-time strategy game, Starcraft II. Includes unit quotes
-      from Starcraft II Wings of Liberty, Heart of the Swarm, and Legacy of the Void. Does not include
-      any cutscene or cinematic quotes. For information regarding the API, see
-      the Swagger UI.
+      from Starcraft II Wings of Liberty, Heart of the Swarm, and Legacy of the
+      Void. Does not include any cutscene or cinematic quotes. For information
+      regarding the API, see the Swagger UI.
     </p>
-    <v-btn id="refresh-button" :color="color" small outlined @click="randomQuote()">Refresh</v-btn>
+    <v-btn
+      id="refresh-button"
+      :color="color"
+      small
+      outlined
+      @click="randomQuote()"
+      >Refresh</v-btn
+    >
     <p class="text-justify mt-4">
       Click the button above or press the 'r' key to return another random
       quote.
     </p>
 
     <h2 id="information-swagger">Swagger UI</h2>
-    <p class="text-justify">Interactive UI for making REST calls to the underlying API.</p>
+    <p class="text-justify">
+      Interactive UI for making REST calls to the underlying API.
+    </p>
     <p class="body-2">
       <a :href="swaggerUrl">{{ swaggerUrl }}</a>
     </p>
@@ -49,38 +58,38 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  name: "Information",
+  name: 'Information',
 
   data: () => ({
     url: process.env.VUE_APP_URL,
     swaggerUrl: process.env.VUE_APP_SWAGGER_URL,
-    quote: "We move unseen.",
-    flavorText: "-An ordinary Stalker",
+    quote: 'We move unseen.',
+    flavorText: '-An ordinary Stalker',
     color: process.env.VUE_APP_COLOR,
     loading: false,
     examplesRandom: [
       `${process.env.VUE_APP_API_URL}/v1/quotes/random`,
-      `${process.env.VUE_APP_API_URL}/v1/quotes/random?faction=terran&action=trained`
+      `${process.env.VUE_APP_API_URL}/v1/quotes/random?faction=terran&action=trained`,
     ],
     examplesCollection: [
       `${process.env.VUE_APP_API_URL}/v1/quotes`,
-      `${process.env.VUE_APP_API_URL}/v1/quotes?is_hero=true&is_melee=false`
+      `${process.env.VUE_APP_API_URL}/v1/quotes?is_hero=true&is_melee=false`,
     ],
-    easterEggArray: []
+    easterEggArray: [],
   }),
   created() {
     this.randomQuote();
   },
   mounted() {
-    window.addEventListener("keypress", e => {
-      if (String.fromCharCode(e.keyCode) === "r") {
+    window.addEventListener('keypress', (e) => {
+      if (String.fromCharCode(e.keyCode) === 'r') {
         this.randomQuote();
       }
     });
-    window.addEventListener("keydown", e => {
+    window.addEventListener('keydown', (e) => {
       this.easterEggArray.push(e.keyCode);
 
       if (
@@ -90,7 +99,7 @@ export default {
             value === [38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 16, 13][index]
         )
       ) {
-        console.log("Yahaha! You found me!");
+        console.log('Yahaha! You found me!');
 
         this.easterEggArray.shift();
         return;
@@ -107,7 +116,7 @@ export default {
             value === [38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13][index]
         )
       ) {
-        console.log("Yahaha! You found me!");
+        console.log('Yahaha! You found me!');
       }
     });
   },
@@ -119,25 +128,25 @@ export default {
       this.loading = true;
       axios
         .get(`${process.env.VUE_APP_API_URL}/v1/quotes/random`)
-        .then(res => {
+        .then((res) => {
           this.quote = res.data;
           this.randomFlavorText();
           this.loading = false;
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           this.loading = false;
         });
     },
     randomFlavorText() {
       let randomNumber = this.randomNumber(0, 4);
-      let text = "-";
+      let text = '-';
       if (this.isUniquePerson()) {
         switch (randomNumber) {
           default:
             text = `-${this.pissedConditional()}${this.quote.unit}`;
         }
-        text += "";
+        text += '';
       } else if (this.quote.isHero) {
         switch (randomNumber) {
           case 0:
@@ -184,54 +193,54 @@ export default {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
     pissedConditional() {
-      if (this.quote.action.toLowerCase() !== "pissed") {
+      if (this.quote.action.toLowerCase() !== 'pissed') {
         if (this.isUniquePerson()) {
-          return "";
+          return '';
         } else {
-          return " ";
+          return ' ';
         }
       }
 
       let randomNumber = this.randomNumber(0, 4);
-      let text = "";
+      let text = '';
 
       if (this.isUniquePerson()) {
         switch (randomNumber) {
           case 0:
-            text = "A pissed-off ";
+            text = 'A pissed-off ';
             break;
           case 1:
-            text = "An irritated ";
+            text = 'An irritated ';
             break;
           case 2:
-            text = "A ticked-off ";
+            text = 'A ticked-off ';
             break;
           case 3:
-            text = "An annoyed ";
+            text = 'An annoyed ';
             break;
           case 4:
           default:
-            text = "A provoked ";
+            text = 'A provoked ';
         }
 
         return text;
       } else {
         switch (randomNumber) {
           case 0:
-            text = ", pissed-off ";
+            text = ', pissed-off ';
             break;
           case 1:
-            text = ", irritated ";
+            text = ', irritated ';
             break;
           case 2:
-            text = ", ticked-off ";
+            text = ', ticked-off ';
             break;
           case 3:
-            text = ", annoyed ";
+            text = ', annoyed ';
             break;
           case 4:
           default:
-            text = ", provoked ";
+            text = ', provoked ';
         }
 
         return text;
@@ -243,7 +252,7 @@ export default {
       } else {
         return false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
